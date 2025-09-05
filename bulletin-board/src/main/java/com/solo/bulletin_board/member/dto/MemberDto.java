@@ -35,4 +35,13 @@ public class MemberDto {
         private String email;
         private String nickname;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    public static class MemberResponse{
+        private long memberId;
+        private String email;
+        private String nickname;
+    }
 }
