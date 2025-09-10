@@ -73,6 +73,19 @@ public class PostingController {
 
     }
 
+    @GetMapping("/tagNames")
+    public ResponseEntity getPostingsByTag(@RequestParam String tagName,
+                                           @RequestParam @Positive int page,
+                                           @RequestParam @Positive int size){
+
+        Page<Posting> pagePostings = postingService.findPostingsByTagName(tagName, page-1, size);
+        List<Posting> postings = pagePostings.getContent();
+
+        return new ResponseEntity(new MultiResponseDto<>(
+                mapper.postingsToPostingInfoResponseDtos(postings), pagePostings), HttpStatus.OK);
+
+    }
+
     @DeleteMapping("/{posting-id}")
     public ResponseEntity deletePosting(@PathVariable("posting-id") @Positive long postingId){
 
