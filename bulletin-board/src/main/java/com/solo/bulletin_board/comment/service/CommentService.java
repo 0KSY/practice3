@@ -1,5 +1,6 @@
 package com.solo.bulletin_board.comment.service;
 
+import com.solo.bulletin_board.auth.userDetailsService.CustomUserDetails;
 import com.solo.bulletin_board.comment.entity.Comment;
 import com.solo.bulletin_board.comment.repository.CommentRepository;
 import com.solo.bulletin_board.exception.BusinessLogicException;
@@ -37,8 +38,8 @@ public class CommentService {
         return findComment;
     }
 
-    public Comment createComment(Comment comment){
-        Member findMember = memberService.findVerifiedMember(comment.getMember().getMemberId());
+    public Comment createComment(Comment comment, CustomUserDetails customUserDetails){
+        Member findMember = memberService.findVerifiedMember(customUserDetails.getMemberId());
         Posting findPosting = postingService.findVerifiedPosting(comment.getPosting().getPostingId());
 
         comment.setMember(findMember);
@@ -48,8 +49,10 @@ public class CommentService {
 
     }
 
-    public Comment updateComment(Comment comment){
+    public Comment updateComment(Comment comment, CustomUserDetails customUserDetails){
         Comment findComment = findVerifiedComment(comment.getCommentId());
+
+        memberService.checkMemberId(findComment.getMember().getMemberId(), customUserDetails);
 
         Optional.of(comment.getContent())
                 .ifPresent(content -> findComment.setContent(content));
@@ -60,9 +63,12 @@ public class CommentService {
 
     }
 
-    public void deleteComment(long commentId){
+    public void deleteComment(long commentId, CustomUserDetails customUserDetails){
 
         Comment findComment = findVerifiedComment(commentId);
+
+        memberService.checkMemberId(findComment.getMember().getMemberId(), customUserDetails);
+
         commentRepository.delete(findComment);
     }
 }

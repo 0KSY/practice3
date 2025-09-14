@@ -23,8 +23,6 @@ public class PostingDto {
         private String title;
         @NotBlank
         private String content;
-        @Positive
-        private long memberId;
 
         @Valid
         private List<PostingTagDto> postingTagDtos;
